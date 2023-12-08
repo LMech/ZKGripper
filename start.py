@@ -1,9 +1,22 @@
+import json
+
 from modules.zk_interaction_utils import ZKDeviceController
 from modules.data_converter import DataConverter
 
+
+def read_settings():
+    # Read settings from JSON file
+    with open('settings.json', 'r') as file:
+        settings = json.load(file)
+    return settings
+
 def start_data_conversion():
+    settings = read_settings()
     # Initialize the ZKDeviceController
-    device_controller = ZKDeviceController(ip_address='192.168.1.222', port=4370, timeout=5, password="0")
+    device_controller = ZKDeviceController(ip_address=settings['device_settings']['ip_address'],
+                                           port=settings['device_settings']['port'],
+                                           timeout=settings['device_settings']['timeout'],
+                                           password=settings['device_settings']['password'])    
     device_controller.create_zk_instance()
 
     try:
@@ -16,7 +29,7 @@ def start_data_conversion():
 
         if attendance_data:
             # Create DataConverter instance
-            converter = DataConverter(file_format='excel')
+            converter = DataConverter(file_format=settings['file_format'])
 
             # Convert data to Excel file
             converter.convert_att_to_file(attendance_data)
