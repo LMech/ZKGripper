@@ -66,22 +66,17 @@ class ZKDeviceController:
         except Exception as e:
             logging.error(f"Error retrieving attendance data: {e}")
             return None
-        
-# if __name__ == "__main__":
-#     # Instantiate DeviceConnection with your device's IP, port, timeout, and password
-#     # Should come from the interface
-#     device = ZKDeviceController(ip_address='192.168.1.222', port=4370, timeout=5, password="0")
-#     device.create_zk_instance()
-
-#     try:
-#         # Connect to the device
-#         connection = device.connect_to_device()
-#         print(connection)
-#         device.disable_device()
-#         print("Device disabled!")
-#         device.enable_device()
-#     except ValueError as e:
-#         logging.error(f"Error: {e}")
-#     finally:
-        # Disconnect from the device
-        device.disconnect_from_device()
+    
+    def retrieve_users_data(self):
+        try:
+            if self.connection:
+                users = self.connection.get_users()
+                if len(users) == 0:
+                    logging.warning("No users data found")
+                return users
+            else:
+                logging.warning("Invalid Connection")
+                return None
+        except Exception as e:
+            logging.error(f"Error retrieving users data: {e}")
+            return None

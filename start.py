@@ -1,6 +1,5 @@
-from datetime import datetime
 from modules.zk_interaction_utils import ZKDeviceController
-from modules.attendence_converter import AttendanceConverter
+from modules.data_converter import DataConverter
 
 def start_data_conversion():
     # Initialize the ZKDeviceController
@@ -11,15 +10,17 @@ def start_data_conversion():
         # Connect to the device
         device_controller.connect_to_device()
 
-        # Retrieve attendance data
+        # Retrieve  data
         attendance_data = device_controller.retrieve_attendance_data()
+        users_data = device_controller.retrieve_users_data()
 
         if attendance_data:
             # Create DataConverter instance
-            converter = AttendanceConverter(file_format='excel')
+            converter = DataConverter(file_format='excel')
 
-            # Convert attendance data to Excel file
-            converter.convert_to_file(attendance_data)
+            # Convert data to Excel file
+            converter.convert_att_to_file(attendance_data)
+            converter.convert_users_to_file(users_data)
         else:
             print("No attendance data retrieved.")
     except ValueError as e:
