@@ -2,7 +2,7 @@ from datetime import datetime
 import pandas as pd
 
 
-class DataConverter:
+class AttendanceConverter:
     def __init__(self, file_format='excel'):
         self.file_format = file_format
 
