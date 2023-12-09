@@ -1,8 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QMessageBox, QSizePolicy
+
 import json
 from modules.data_converter import DataConverter
 from modules.zk_interaction_utils import ZKDeviceController
-
 
 class ZKGInterface(QWidget):
     def __init__(self):
@@ -17,24 +17,32 @@ class ZKGInterface(QWidget):
         self.title_label = QLabel('Attendance System')
         layout.addWidget(self.title_label)
 
+        button_layout = QGridLayout()
+
         self.btn_connect = QPushButton('Connect')
         self.btn_connect.clicked.connect(self.toggle_connection)
-        layout.addWidget(self.btn_connect)
+        self.btn_connect.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        button_layout.addWidget(self.btn_connect, 0, 0)
 
         self.btn_device = QPushButton('Enable Device')
         self.btn_device.clicked.connect(self.toggle_device)
-        self.btn_device.setEnabled(False)  # Initially disabled
-        layout.addWidget(self.btn_device)
+        self.btn_device.setEnabled(False)
+        self.btn_device.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        button_layout.addWidget(self.btn_device, 0, 1)
 
         self.btn_export_users = QPushButton('Export Users Data')
         self.btn_export_users.clicked.connect(self.export_users_data)
-        self.btn_export_users.setEnabled(False)  # Initially disabled
-        layout.addWidget(self.btn_export_users)
+        self.btn_export_users.setEnabled(False)
+        self.btn_export_users.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        button_layout.addWidget(self.btn_export_users, 1, 0)
 
         self.btn_export_attendance = QPushButton('Export Attendance Data')
         self.btn_export_attendance.clicked.connect(self.export_attendance_data)
-        self.btn_export_attendance.setEnabled(False)  # Initially disabled
-        layout.addWidget(self.btn_export_attendance)
+        self.btn_export_attendance.setEnabled(False)
+        self.btn_export_attendance.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        button_layout.addWidget(self.btn_export_attendance, 1, 1)
+
+        layout.addLayout(button_layout)
 
         self.setLayout(layout)
         self.setWindowTitle('Attendance System')
