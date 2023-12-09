@@ -94,10 +94,10 @@ class ZKDeviceController:
 
     def is_device_enabled(self):
         try:
-            if self.connection:
-                return self.connection.is_enabled()  # Replace with appropriate method or attribute
+            if self.connection.is_enabled:
+                return self.connection.is_enabled
             else:
-                raise ValueError("Invalid Connection")
+                return False
         except Exception as e:
             error_msg = f"Error checking device status: {e}"
             logging.error(error_msg)

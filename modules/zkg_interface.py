@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QMessageBox, QSizePolicy
-
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QPushButton, QLabel, QMessageBox, QSizePolicy
 import json
 from modules.data_converter import DataConverter
 from modules.zk_interaction_utils import ZKDeviceController
@@ -10,7 +9,6 @@ class ZKGInterface(QWidget):
         super().__init__()
         self.init_ui()
         self.device_controller = None
-        self.device_enabled = False
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -29,7 +27,7 @@ class ZKGInterface(QWidget):
         self.btn_connect.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         button_layout.addWidget(self.btn_connect, 0, 0)
 
-        self.btn_device = QPushButton('Enable Device')
+        self.btn_device = QPushButton('Disable Device')
         self.btn_device.clicked.connect(self.toggle_device)
         self.btn_device.setEnabled(False)
         self.btn_device.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -48,10 +46,9 @@ class ZKGInterface(QWidget):
         button_layout.addWidget(self.btn_export_attendance, 1, 1)
 
         layout.addLayout(button_layout)
-
         self.setLayout(layout)
         self.setWindowTitle('Attendance System')
-
+        self.btn_device.setEnabled(False)  
     def toggle_connection(self):
         if not self.device_controller:
             self.connect_to_device()
@@ -75,6 +72,13 @@ class ZKGInterface(QWidget):
             self.btn_connect.setText('Disconnect')
             self.btn_device.setEnabled(True)
             self.btn_export_users.setEnabled(True)
+            self.btn_export_attendance.setEnabled(True)
+            
+            # Check if the device controller and connection are valid before enabling 'Export Attendance Data' button
+            if self.device_controller and self.device_controller.connection:
+                self.btn_export_attendance.setEnabled(True)
+            else:
+                self.btn_export_attendance.setEnabled(False)
         except ValueError as e:
             self.show_error_dialog(f"Error connecting to device: {e}")
 
@@ -84,25 +88,26 @@ class ZKGInterface(QWidget):
                 # Disconnect from the device
                 self.device_controller.disconnect_from_device()
                 self.device_controller = None
-                self.btn_connect.setText('Connect to Device')
+                self.btn_connect.setText('Connect')
                 self.btn_device.setEnabled(False)
                 self.btn_export_users.setEnabled(False)
+                self.btn_export_attendance.setEnabled(False)
+
         except ValueError as e:
             self.show_error_dialog(f"Error disconnecting from device: {e}")
 
     def toggle_device(self):
         if self.device_controller:
             try:
-                if self.device_enabled:
+                if self.device_controller.is_device_enabled():
                     self.device_controller.disable_device()
                     print("Device disabled")
-                    self.device_enabled = False
                     self.btn_device.setText('Enable Device')
                 else:
                     self.device_controller.enable_device()
                     print("Device enabled")
-                    self.device_enabled = True
                     self.btn_device.setText('Disable Device')
+                    
             except ValueError as e:
                 self.show_error_dialog(f"Error toggling device: {e}")
         else:
@@ -144,6 +149,7 @@ class ZKGInterface(QWidget):
 
         settings_window = SettingsWindow(settings)
         settings_window.exec_()
+
 
 def read_settings():
     # Read settings from JSON file
