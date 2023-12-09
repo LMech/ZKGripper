@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QGridLayout, QPu
 import json
 from modules.data_converter import DataConverter
 from modules.zk_interaction_utils import ZKDeviceController
+from modules.settings_windows import SettingsWindow
 
 class ZKGInterface(QWidget):
     def __init__(self):
@@ -16,6 +17,10 @@ class ZKGInterface(QWidget):
 
         self.title_label = QLabel('Attendance System')
         layout.addWidget(self.title_label)
+
+        self.btn_settings = QPushButton('Settings')
+        self.btn_settings.clicked.connect(self.open_settings)
+        layout.addWidget(self.btn_settings)
 
         button_layout = QGridLayout()
 
@@ -132,6 +137,13 @@ class ZKGInterface(QWidget):
         msg.setInformativeText(message)
         msg.setWindowTitle("Error")
         msg.exec_()
+        
+    def open_settings(self):
+        with open('settings.json', 'r') as file:
+            settings = json.load(file)
+
+        settings_window = SettingsWindow(settings)
+        settings_window.exec_()
 
 def read_settings():
     # Read settings from JSON file
