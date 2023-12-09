@@ -15,44 +15,55 @@ class ZKDeviceController:
         self.ip_address = ip_address
         self.port = port
         self.timeout = timeout
-        self.password = self.password = hashlib.sha256(password.encode()).hexdigest()
+        self.password = hashlib.sha256(password.encode()).hexdigest()
         self.zk = None
+
     def create_zk_instance(self):
         try:
-            self.zk = ZK(self.ip_address, self.port,self.timeout, self.password, force_udp=False, ommit_ping=False)
+            self.zk = ZK(self.ip_address, self.port, self.timeout, self.password, force_udp=False, ommit_ping=False)
         except Exception as e:
-            logging.error(f"Failed to initialize ZK: {e}")
-            raise ValueError("Failed to initialize ZK")
+            error_msg = f"Failed to initialize ZK: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
 
     def connect_to_device(self):
         try:
+            if self.zk is None:
+                raise ValueError("ZK instance not created")
+            
             # connect to device
             self.connection = self.zk.connect()
             self.connection.read_sizes()
             return self.connection
-        except (Exception) as e:
-            logging.error(f"Process terminate for device {self.ip_address}:{self.port} : %s", e)
-            raise ValueError("Failed to connect to device")
+        except Exception as e:
+            error_msg = f"Failed to connect to device {self.ip_address}:{self.port}: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+
     def disable_device(self):
         if self.connection:
             self.connection.disable_device()
         else:
             raise ValueError("Invalid Connection")
-        
+
     def enable_device(self):
         if self.connection:
             self.connection.enable_device()
         else:
             raise ValueError("Invalid Connection")
 
-    # Function to disconnect from the fingerprint device
     def disconnect_from_device(self):
-         try:
-            self.connection.disconnect()
-            self.connection = None
-         except:
-            raise ValueError("Invalid Connection")
-        
+        try:
+            if self.connection:
+                self.connection.disconnect()
+                self.connection = None
+            else:
+                raise ValueError("Invalid Connection")
+        except Exception as e:
+            error_msg = f"Failed to disconnect from device: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+
     def retrieve_attendance_data(self):
         try:
             if self.connection:
@@ -61,12 +72,12 @@ class ZKDeviceController:
                     logging.warning("No attendance data found")
                 return attendances
             else:
-                logging.warning("Invalid Connection")
-                return None
+                raise ValueError("Invalid Connection")
         except Exception as e:
-            logging.error(f"Error retrieving attendance data: {e}")
-            return None
-    
+            error_msg = f"Error retrieving attendance data: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+
     def retrieve_users_data(self):
         try:
             if self.connection:
@@ -75,19 +86,19 @@ class ZKDeviceController:
                     logging.warning("No users data found")
                 return users
             else:
-                logging.warning("Invalid Connection")
-                return None
+                raise ValueError("Invalid Connection")
         except Exception as e:
-            logging.error(f"Error retrieving users data: {e}")
-            return None
-        
+            error_msg = f"Error retrieving users data: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)
+
     def is_device_enabled(self):
         try:
-            # Assuming device status can be retrieved using some method or attribute
             if self.connection:
                 return self.connection.is_enabled()  # Replace with appropriate method or attribute
             else:
                 raise ValueError("Invalid Connection")
         except Exception as e:
-            logging.error(f"Error checking device status: {e}")
-            return False
+            error_msg = f"Error checking device status: {e}"
+            logging.error(error_msg)
+            raise ValueError(error_msg)

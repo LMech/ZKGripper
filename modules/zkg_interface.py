@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QMessageBox
 import json
 from modules.data_converter import DataConverter
 from modules.zk_interaction_utils import ZKDeviceController
@@ -63,7 +63,7 @@ class ZKGInterface(QWidget):
             self.btn_device.setEnabled(True)
             self.btn_export_users.setEnabled(True)
         except ValueError as e:
-            print(f"Error connecting to device: {e}")
+            self.show_error_dialog(f"Error connecting to device: {e}")
 
     def disconnect_from_device(self):
         try:
@@ -75,7 +75,7 @@ class ZKGInterface(QWidget):
                 self.btn_device.setEnabled(False)
                 self.btn_export_users.setEnabled(False)
         except ValueError as e:
-            print(f"Error disconnecting from device: {e}")
+            self.show_error_dialog(f"Error disconnecting from device: {e}")
 
     def toggle_device(self):
         if self.device_controller:
@@ -91,7 +91,7 @@ class ZKGInterface(QWidget):
                     self.device_enabled = True
                     self.btn_device.setText('Disable Device')
             except ValueError as e:
-                print(f"Error toggling device: {e}")
+                self.show_error_dialog(f"Error toggling device: {e}")
         else:
             print("Please connect to the device first")
 
@@ -104,7 +104,7 @@ class ZKGInterface(QWidget):
             else: 
                 print("No users data retrieved.")
         except ValueError as e:
-            print(f"Error exporting users data: {e}")
+            self.show_error_dialog(f"Error exporting users data: {e}")
              
     def export_attendance_data(self):
         try:
@@ -115,7 +115,15 @@ class ZKGInterface(QWidget):
             else: 
                 print("No attendance data retrieved.")
         except ValueError as e:
-            print(f"Error exporting attendance data: {e}")       
+            self.show_error_dialog(f"Error exporting attendance data: {e}")
+
+    def show_error_dialog(self, message):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText(message)
+        msg.setWindowTitle("Error")
+        msg.exec_()
 
 def read_settings():
     # Read settings from JSON file
