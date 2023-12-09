@@ -1,2 +1,3 @@
 pyzk @ git+https://github.com/fananimi/pyzk@50637985b56c3312bf80346c022ebfa567e02808
 pandas
+pyqt5

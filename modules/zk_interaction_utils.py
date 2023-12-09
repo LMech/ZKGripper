@@ -80,3 +80,14 @@ class ZKDeviceController:
         except Exception as e:
             logging.error(f"Error retrieving users data: {e}")
             return None
+        
+    def is_device_enabled(self):
+        try:
+            # Assuming device status can be retrieved using some method or attribute
+            if self.connection:
+                return self.connection.is_enabled()  # Replace with appropriate method or attribute
+            else:
+                raise ValueError("Invalid Connection")
+        except Exception as e:
+            logging.error(f"Error checking device status: {e}")
+            return False
