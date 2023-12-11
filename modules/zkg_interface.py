@@ -154,7 +154,7 @@ class ZKGInterface(QWidget):
         settings_window.exec_()
         
     def on_close(self, event):
-        self.device_controller.enable_device()
+        self.device_controller.disconnect_from_device()
         event.accept()
 
 
