@@ -55,6 +55,7 @@ class ZKDeviceController:
     def disconnect_from_device(self):
         try:
             if self.connection:
+                self.enable_device()
                 self.connection.disconnect()
                 self.connection = None
             else:

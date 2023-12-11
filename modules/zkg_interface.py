@@ -9,6 +9,8 @@ class ZKGInterface(QWidget):
         super().__init__()
         self.init_ui()
         self.device_controller = None
+        self.closeEvent = self.on_close
+
 
     def init_ui(self):
         layout = QVBoxLayout()
@@ -150,6 +152,10 @@ class ZKGInterface(QWidget):
 
         settings_window = SettingsWindow(settings)
         settings_window.exec_()
+        
+    def on_close(self, event):
+        self.device_controller.enable_device()
+        event.accept()
 
 
 def read_settings():
