@@ -1,1 +1,1 @@
-{"device_settings": {"ip_address": "192.168.1.222", "port": 4370, "timeout": 2, "password": "0"}, "file_format": "excel"}
+{"device_settings": {"ip_address": "192.168.1.222", "port": 4370, "timeout": 2, "password": "0"}, "file_format": "excel", "export_path": "C:\\Users\\Michael George\\Desktop"}

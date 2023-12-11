@@ -24,6 +24,9 @@ class SettingsWindow(QDialog):
 
         self.file_format_edit = QLineEdit(self.settings['file_format'])
         layout.addRow('File Format:', self.file_format_edit)
+        
+        self.export_path_edit = QLineEdit(self.settings['export_path'])
+        layout.addRow('Export Path:', self.export_path_edit)
 
         save_button = QPushButton('Save Settings')
         save_button.clicked.connect(self.save_settings)
@@ -37,6 +40,8 @@ class SettingsWindow(QDialog):
         self.settings['device_settings']['timeout'] = int(self.timeout_edit.text())
         self.settings['device_settings']['password'] = self.password_edit.text()
         self.settings['file_format'] = self.file_format_edit.text()
+        self.settings['export_path'] = self.export_path_edit.text()
+
 
         with open('settings.json', 'w') as file:
             json.dump(self.settings, file)
