@@ -27,7 +27,7 @@ class ZKGInterface(QWidget):
         self.btn_connect.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         button_layout.addWidget(self.btn_connect, 0, 0)
 
-        self.btn_device = QPushButton('Disable Device')
+        self.btn_device = QPushButton('Enable Device')
         self.btn_device.clicked.connect(self.toggle_device)
         self.btn_device.setEnabled(False)
         self.btn_device.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -69,6 +69,7 @@ class ZKGInterface(QWidget):
                                                         password=settings['device_settings']['password'])
             self.device_controller.create_zk_instance()
             self.device_controller.connect_to_device()
+            self.device_controller.disable_device()
             self.btn_connect.setText('Disconnect')
             self.btn_device.setEnabled(True)
             self.btn_export_users.setEnabled(True)
