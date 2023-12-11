@@ -15,12 +15,12 @@ class DataConverter:
         
 
         for record in att_data:
-            aslist.append((record.user_id, record.timestamp))
+            aslist.append([record.user_id, record.timestamp, record.punch])
         if self.export_path:
             file_name = os.path.join(self.export_path, file_name)
         if self.file_format == 'excel':
             file_name += ".xlsx" 
-            self._convert_to_excel(aslist, file_name)
+            self._convert_to_excel(aslist, ["id", "timestamp", "punch"],file_name)
         # Add support for other formats here
         else:
             raise ValueError(f"Unsupported file format: {self.file_format}")
@@ -29,18 +29,18 @@ class DataConverter:
         file_name = f"users_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
         aslist = []
         for record in users_data:
-            aslist.append((record.user_id, record.name))
+            aslist.append([record.user_id, record.name])
         if self.export_path:
             file_name = os.path.join(self.export_path, file_name)
 
         if self.file_format == 'excel':
             file_name += ".xlsx"
-            self._convert_to_excel(aslist, file_name)
+            self._convert_to_excel(aslist, ["id", "name"],file_name)
         # Add support for other formats here
         else:
             raise ValueError(f"Unsupported file format: {self.file_format}")
-    def _convert_to_excel(self, aslist, file_name):
-        df = pd.DataFrame(aslist)
+    def _convert_to_excel(self, aslist, columns, file_name):
+        df = pd.DataFrame(data=aslist, columns=columns)
         df.to_excel(file_name, index=False)
         
 def read_settings():
